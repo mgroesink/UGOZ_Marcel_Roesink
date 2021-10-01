@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UGOZ_Marcel_Roesink.Models;
+using UGOZ_Marcel_Roesink.Utility;
 
 namespace UGOZ_Marcel_Roesink.Controllers
 {
@@ -16,9 +17,16 @@ namespace UGOZ_Marcel_Roesink.Controllers
             _db = db;
         }
 
-        public IActionResult Index()
+        public IActionResult Login()
         {
-            
+            double pi = Math.PI;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(string Email , string Password)
+        {
+
             return View();
         }
     }

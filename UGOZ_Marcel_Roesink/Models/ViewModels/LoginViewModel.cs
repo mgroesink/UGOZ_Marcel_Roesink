@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UGOZ_Marcel_Roesink.Models
+namespace UGOZ_Marcel_Roesink.Models.ViewModels
 {
     public class LoginViewModel
     {
@@ -21,10 +21,6 @@ namespace UGOZ_Marcel_Roesink.Models
             }
             set
             {
-                //if(!value.EndsWith("rocvantwente.nl"))
-                //{
-                //    throw new Exception("Alleen ROC accounts");
-                //}
                 _email = value.ToLower();
             }
 
