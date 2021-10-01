@@ -19,7 +19,6 @@ namespace UGOZ_Marcel_Roesink.Controllers
 
         public IActionResult Login()
         {
-            double pi = Math.PI;
             return View();
         }
 
