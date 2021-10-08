@@ -28,5 +28,10 @@ namespace UGOZ_Marcel_Roesink.Controllers
 
             return View();
         }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
     }
 }
