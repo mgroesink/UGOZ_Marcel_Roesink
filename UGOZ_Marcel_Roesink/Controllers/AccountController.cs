@@ -35,14 +35,29 @@ namespace UGOZ_Marcel_Roesink.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string Email , string Password)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-
+            if(ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Privacy", "Home");
+                }
+                ModelState.AddModelError("", "Inloggen is mislukt");
+            }
             return View();
         }
 
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
+            // Create roles if admin role does not exist
+            if(!_roleManager.RoleExistsAsync(Helper.Admin).GetAwaiter().GetResult())
+            {
+                await _roleManager.CreateAsync(new IdentityRole(Helper.Admin));
+                await _roleManager.CreateAsync(new IdentityRole(Helper.Doctor));
+                await _roleManager.CreateAsync(new IdentityRole(Helper.Patient));
+            }
             return View();
         }
 

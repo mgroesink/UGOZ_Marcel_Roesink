@@ -1,10 +1,12 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
+
 a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
 }
+
 /* Provide sufficient contrast against white background */
 a {
     color: #0366d6;
@@ -21,10 +23,12 @@ a {
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
     font-size: 14px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -49,6 +53,7 @@ button.accept-policy {
     font-size: 1rem;
     line-height: inherit;
 }
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -78,8 +83,9 @@ body {
 }
 
 .navbar-inverse {
-    background-color: #162466 !important;
-    border-color: #162466 !important;
+    background-color: #015687 !important;
+    border-color: #4d0187 !important;
+    color: white;
 }
 
 .panel-heading-custom {
@@ -101,6 +107,8 @@ body {
 .select2-container {
     width: 100% !important
 }
+
+
 /* The container */
 .radio-container {
     display: block;
@@ -113,11 +121,13 @@ body {
     user-select: none;
     font-weight: normal;
 }
+
     /* Hide the browser's default radio button */
     .radio-container input {
         opacity: 0;
         cursor: pointer;
     }
+
 /* Create a custom radio button */
 .checkmark {
     position: absolute;
@@ -130,21 +140,25 @@ body {
     background-color: transparent;
     border-color: #162466;
 }
+
 /* On mouse-over, add a grey background color */
 .radio-container:hover input ~ .checkmark {
     background-color: #ccc;
 }
+
 /* When the radio button is checked, add a blue background */
 .radio-container input:checked ~ .checkmark {
     background-color: #162466;
     color: white;
 }
+
 /* Create the indicator (the dot/circle - hidden when not checked) */
 .checkmark:after {
     content: "";
     position: absolute;
     display: none;
 }
+
 /* Show the indicator (dot/circle) when checked */
 .radio-container input:checked ~ .checkmark:after {
     display: block;
@@ -152,8 +166,8 @@ body {
 
 #logo {
     position: fixed;
-    top: 50px;
-    left:0;
+    top: 75px;
+    left: 0;
     width: 200px;
     height: 75px;
 }

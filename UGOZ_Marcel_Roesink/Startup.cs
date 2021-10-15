@@ -51,6 +51,8 @@ namespace UGOZ_Marcel_Roesink
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
