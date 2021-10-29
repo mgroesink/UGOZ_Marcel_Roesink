@@ -10,6 +10,6 @@ namespace UGOZ_Marcel_Roesink.Services
     {
         public List<DoctorViewModel> GetDoctorList();
         public List<PatientViewModel> GetPatientList();
-
+        public Task<int> AddUpdate(AppointmentViewModel model);
     }
 }

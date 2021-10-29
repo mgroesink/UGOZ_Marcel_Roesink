@@ -13,5 +13,7 @@ namespace UGOZ_Marcel_Roesink.Models
         {
 
         }
+
+        public DbSet<Appointment> Appointments { get; set; }
     }
 }

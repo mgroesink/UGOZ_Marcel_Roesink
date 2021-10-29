@@ -17,6 +17,13 @@ namespace UGOZ_Marcel_Roesink.Controllers
         SignInManager<ApplicationUser> _signInManager;
         RoleManager<IdentityRole> _roleManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountController"/> class.
+        /// </summary>
+        /// <param name="db">The database.</param>
+        /// <param name="userManager">The user manager.</param>
+        /// <param name="roleManager">The role manager.</param>
+        /// <param name="signInManager">The sign in manager.</param>
         public AccountController(ApplicationDbContext db ,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -29,6 +36,10 @@ namespace UGOZ_Marcel_Roesink.Controllers
 
         }
 
+        /// <summary>
+        /// Show login screen to the user.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Login()
         {
             return View();
@@ -36,6 +47,11 @@ namespace UGOZ_Marcel_Roesink.Controllers
 
 
 
+        /// <summary>
+        /// Logs a user in.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -44,13 +60,28 @@ namespace UGOZ_Marcel_Roesink.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Privacy", "Home");
+                    return RedirectToAction("Index", "Appointment");
                 }
                 ModelState.AddModelError("", "Inloggen is mislukt");
             }
             return View();
         }
 
+        /// <summary>
+        /// Logs the current user off.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> LogOff()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
+
+        /// <summary>
+        /// Show register screen for new user.
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Register()
         {
             // Create roles if admin role does not exist
@@ -63,6 +94,11 @@ namespace UGOZ_Marcel_Roesink.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        /// <param name="model">The user data.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)

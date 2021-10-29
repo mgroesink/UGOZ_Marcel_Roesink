@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UGOZ_Marcel_Roesink.Models;
+using UGOZ_Marcel_Roesink.Services;
 
 namespace UGOZ_Marcel_Roesink
 {
@@ -29,7 +30,9 @@ namespace UGOZ_Marcel_Roesink
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews();
+            services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddHttpContextAccessor();
 
         }
 
