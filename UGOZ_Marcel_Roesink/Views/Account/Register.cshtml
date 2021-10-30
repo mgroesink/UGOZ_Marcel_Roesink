@@ -2,8 +2,14 @@
 
 <h2>Registreren</h2>
 <form method="post" asp-action="Register" asp-controller="Account">
-
-    <h4>Account aanmaken</h4>
+    @if (User.IsInRole(UGOZ_Marcel_Roesink.Utility.Helper.Admin))
+    {
+        <h4>Beheerder aanmaken</h4>
+    }
+    else
+    {
+        <h4>Account aanmaken</h4>
+    }
     <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group row">

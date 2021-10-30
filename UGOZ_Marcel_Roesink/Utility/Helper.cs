@@ -34,12 +34,19 @@ namespace UGOZ_Marcel_Roesink.Utility
         /// <returns></returns>
         public static List<SelectListItem> GetRolesForDropDown(bool isAdmin = false)
         {
-            var items = new List<SelectListItem>
+
+            var items = new List<SelectListItem>();
+
+            if(isAdmin)
             {
-                new SelectListItem{Value=Helper.Admin , Text=Helper.Admin},
-                new SelectListItem{Value=Helper.Patient , Text=Helper.Patient},
-                new SelectListItem{Value=Helper.Doctor , Text=Helper.Doctor}
-            };
+                items.Add(new SelectListItem { Value = Helper.Admin, Text = Helper.Admin });
+            }
+            else
+            {
+                items.Add(new SelectListItem { Value = Helper.Patient, Text = Helper.Patient });
+                items.Add(new SelectListItem { Value = Helper.Doctor, Text = Helper.Doctor });
+
+            }
             return items.OrderBy(s => s.Text).ToList();
         }
 
