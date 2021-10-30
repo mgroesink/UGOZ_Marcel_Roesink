@@ -32,6 +32,34 @@ function InitializeCalendar() {
                 },
                 select: function (event) {
                     onShowModal(event, null);
+                },
+                eventDisplay: 'block',
+                events: function (fetchInfo, succesCallback, failureCallback) {
+                    $.ajax({
+                        url: routeURL + '/api/AppointmentApi/GetCalendarData?doctorId=' + $("#doctorId").val(),
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            var events = [];
+                            if (response.status === 1) {
+                                $.each(response.dataenum, function (i, data) {
+                                    events.push({
+                                        title: data.title,
+                                        description: data.description,
+                                        start: data.startDate,
+                                        end: data.endDate,
+                                        backgroundColor: data.isDoctorApproved ? "#28a745" : "#dc3545",
+                                        textColor: "white",
+                                        id: data.id
+                                    });
+                                })
+                            }
+                            succesCallback(events);
+                        },
+                        error: function (xhr) {
+                            $.notify("Error", "error");
+                        }
+                    });
                 }
                 //,
                 //dayRender: function (date, cell) {

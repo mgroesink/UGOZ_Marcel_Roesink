@@ -56,5 +56,36 @@ namespace UGOZ_Marcel_Roesink.Controllers.Api
             }
             return Ok(commonResponse);
         }
+
+        [HttpGet]
+        [Route("GetCalendarData")]
+        public IActionResult GetCalendarData(string doctorId)
+        {
+            CommonResponse<List<AppointmentViewModel>> commonResponse = new CommonResponse<List<AppointmentViewModel>>();
+            try
+            {
+                if(role == Helper.Patient)
+                {
+                    commonResponse.Dataenum = _appointmentService.PatientAppointments(loginUserId);
+                    commonResponse.Status = Helper.Succes_code;
+                }
+                else if(role == Helper.Doctor)
+                {
+                    commonResponse.Dataenum = _appointmentService.DoctorAppointments(loginUserId);
+                    commonResponse.Status = Helper.Succes_code;
+                }
+                else
+                {
+                    commonResponse.Dataenum = _appointmentService.DoctorAppointments(doctorId);
+                    commonResponse.Status = Helper.Succes_code;
+                }
+            }
+            catch(Exception ex)
+            {
+                commonResponse.Message = ex.Message;
+                commonResponse.Status = Helper.Failure_code;
+            }
+            return Ok(commonResponse);
+        }
     }
 }

@@ -83,5 +83,35 @@ namespace UGOZ_Marcel_Roesink.Services
                ).OrderBy(u => u.Name).ToList();
             return patients;
         }
+
+        public List<AppointmentViewModel> PatientAppointments(string patientid)
+        {
+            return _db.Appointments.Where(a => a.PatientId == patientid).ToList().Select(
+                c => new AppointmentViewModel()
+                {
+                    Id = c.Id,
+                    Description = c.Description,
+                    StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Title = c.Title,
+                    Duration = c.Duration,
+                    IsDoctorApproved = c.IsDoctorApproved
+                }).ToList();
+        }
+
+        public List<AppointmentViewModel> DoctorAppointments(string doctorid)
+        {
+            return _db.Appointments.Where(a => a.DoctorId == doctorid).ToList().Select(
+                c => new AppointmentViewModel()
+                {
+                    Id = c.Id,
+                    Description = c.Description,
+                    StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Title = c.Title,
+                    Duration = c.Duration,
+                    IsDoctorApproved = c.IsDoctorApproved
+                }).ToList();
+        }
     }
 }
