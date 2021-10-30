@@ -9,11 +9,27 @@ namespace UGOZ_Marcel_Roesink.Models
 {
     public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
+
+        #region Properties
+        /// <summary>
+        /// Gets or sets the appointments.
+        /// </summary>
+        /// <value>
+        /// The appointments.
+        /// </value>
+        public DbSet<Appointment> Appointments { get; set; }
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
-        }
+        } 
+        #endregion
 
-        public DbSet<Appointment> Appointments { get; set; }
     }
 }

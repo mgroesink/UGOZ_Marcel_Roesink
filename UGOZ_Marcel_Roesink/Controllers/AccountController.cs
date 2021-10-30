@@ -12,11 +12,15 @@ namespace UGOZ_Marcel_Roesink.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        UserManager<ApplicationUser> _userManager;
-        SignInManager<ApplicationUser> _signInManager;
-        RoleManager<IdentityRole> _roleManager;
 
+        #region Fields
+        private readonly ApplicationDbContext _db;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager; 
+        #endregion
+
+        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// </summary>
@@ -24,7 +28,7 @@ namespace UGOZ_Marcel_Roesink.Controllers
         /// <param name="userManager">The user manager.</param>
         /// <param name="roleManager">The role manager.</param>
         /// <param name="signInManager">The sign in manager.</param>
-        public AccountController(ApplicationDbContext db ,
+        public AccountController(ApplicationDbContext db,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<ApplicationUser> signInManager)
@@ -34,8 +38,10 @@ namespace UGOZ_Marcel_Roesink.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
 
-        }
+        } 
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Show login screen to the user.
         /// </summary>
@@ -55,7 +61,7 @@ namespace UGOZ_Marcel_Roesink.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
                 if (result.Succeeded)
@@ -85,7 +91,7 @@ namespace UGOZ_Marcel_Roesink.Controllers
         public async Task<IActionResult> Register()
         {
             // Create roles if admin role does not exist
-            if(!_roleManager.RoleExistsAsync(Helper.Admin).GetAwaiter().GetResult())
+            if (!_roleManager.RoleExistsAsync(Helper.Admin).GetAwaiter().GetResult())
             {
                 await _roleManager.CreateAsync(new IdentityRole(Helper.Admin));
                 await _roleManager.CreateAsync(new IdentityRole(Helper.Doctor));
@@ -104,7 +110,7 @@ namespace UGOZ_Marcel_Roesink.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             // Check of model valide is
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ApplicationUser user = new ApplicationUser()
                 {
@@ -115,7 +121,7 @@ namespace UGOZ_Marcel_Roesink.Controllers
                     LastName = model.LastName
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, model.RoleName);
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -130,6 +136,8 @@ namespace UGOZ_Marcel_Roesink.Controllers
 
             }
             return View();
-        }
+        } 
+        #endregion
+
     }
 }

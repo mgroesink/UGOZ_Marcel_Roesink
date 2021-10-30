@@ -10,20 +10,29 @@ namespace UGOZ_Marcel_Roesink.Controllers
 {
     public class AppointmentController : Controller
     {
-        private readonly IAppointmentService _appointmentService;
 
+        #region Fields
+        private readonly IAppointmentService _appointmentService; 
+        #endregion
+
+        #region Constructors
         public AppointmentController(IAppointmentService appointmentService)
         {
             _appointmentService = appointmentService;
-        }
+        } 
+        #endregion
+
+        #region Methods
         public IActionResult Index()
         {
             ViewBag.DoctorList = _appointmentService.GetDoctorList();
             ViewBag.PatientList = _appointmentService.GetPatientList();
-            ViewBag.Duration = Helper.GetTimeDropDown(90 , 10);
+            ViewBag.Duration = Helper.GetTimeDropDown(90, 10);
 
             return View();
 
-        }
+        } 
+        #endregion
+
     }
 }

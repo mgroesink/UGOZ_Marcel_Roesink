@@ -11,19 +11,34 @@ namespace UGOZ_Marcel_Roesink.Services
 {
     public class AppointmentService : IAppointmentService
     {
+        #region Fields
         private readonly ApplicationDbContext _db;
 
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppointmentService"/> class.
+        /// </summary>
+        /// <param name="db">The database.</param>
         public AppointmentService(ApplicationDbContext db)
         {
             _db = db;
         }
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Adds or updates an appointment.
+        /// </summary>
+        /// <param name="model">The appointment data.</param>
+        /// <returns></returns>
         public async Task<int> AddUpdate(AppointmentViewModel model)
         {
             // Let op het gebruik van een specifieke culture om de datum string te converteren naar een DateTime object
-            var startDate = DateTime.Parse(model.StartDate, CultureInfo.CreateSpecificCulture("en-US"));
+            var startDate = DateTime.Parse(model.StartDate, CultureInfo.CreateSpecificCulture("nl-NL"));
             var endDate = startDate.AddMinutes(Convert.ToDouble(model.Duration));
-            if(model != null && model.Id > 0)
+            if (model != null && model.Id > 0)
             {
                 //TODO: Add code to update existing appointment
                 return 1;
@@ -52,6 +67,10 @@ namespace UGOZ_Marcel_Roesink.Services
 
         }
 
+        /// <summary>
+        /// Gets the doctor list.
+        /// </summary>
+        /// <returns></returns>
         public List<DoctorViewModel> GetDoctorList()
         {
             var doctors = (from user in _db.Users
@@ -68,22 +87,31 @@ namespace UGOZ_Marcel_Roesink.Services
             return doctors;
         }
 
+        /// <summary>
+        /// Gets the patient list.
+        /// </summary>
+        /// <returns></returns>
         public List<PatientViewModel> GetPatientList()
         {
             var patients = (from user in _db.Users
-                           join userRole in _db.UserRoles on user.Id equals userRole.UserId
-                           join role in _db.Roles.Where(x => x.Name == Helper.Patient) on userRole.RoleId equals role.Id
-                           select new PatientViewModel
-                           {
-                               Id = user.Id,
-                               // Ternary operator
-                               Name = string.IsNullOrEmpty(user.MiddleName) ? user.FirstName + " " + user.LastName :
-                                user.FirstName + " " + user.MiddleName + " " + user.LastName
-                           }
+                            join userRole in _db.UserRoles on user.Id equals userRole.UserId
+                            join role in _db.Roles.Where(x => x.Name == Helper.Patient) on userRole.RoleId equals role.Id
+                            select new PatientViewModel
+                            {
+                                Id = user.Id,
+                                // Ternary operator
+                                Name = string.IsNullOrEmpty(user.MiddleName) ? user.FirstName + " " + user.LastName :
+                                 user.FirstName + " " + user.MiddleName + " " + user.LastName
+                            }
                ).OrderBy(u => u.Name).ToList();
             return patients;
         }
 
+        /// <summary>
+        /// Get the patient's appointments.
+        /// </summary>
+        /// <param name="patientid">The patientid.</param>
+        /// <returns></returns>
         public List<AppointmentViewModel> PatientAppointments(string patientid)
         {
             return _db.Appointments.Where(a => a.PatientId == patientid).ToList().Select(
@@ -91,14 +119,19 @@ namespace UGOZ_Marcel_Roesink.Services
                 {
                     Id = c.Id,
                     Description = c.Description,
-                    StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                    EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm"),
+                    EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm"),
                     Title = c.Title,
                     Duration = c.Duration,
                     IsDoctorApproved = c.IsDoctorApproved
                 }).ToList();
         }
 
+        /// <summary>
+        /// Gets the Doctor's appointments.
+        /// </summary>
+        /// <param name="doctorid">The doctorid.</param>
+        /// <returns></returns>
         public List<AppointmentViewModel> DoctorAppointments(string doctorid)
         {
             return _db.Appointments.Where(a => a.DoctorId == doctorid).ToList().Select(
@@ -106,12 +139,66 @@ namespace UGOZ_Marcel_Roesink.Services
                 {
                     Id = c.Id,
                     Description = c.Description,
-                    StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                    EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm"),
+                    EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm"),
                     Title = c.Title,
                     Duration = c.Duration,
                     IsDoctorApproved = c.IsDoctorApproved
                 }).ToList();
         }
+
+        /// <summary>
+        /// Gets appointment by identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        public AppointmentViewModel GetById(int id)
+        {
+            return _db.Appointments.Where(a => a.Id == id).ToList().Select(
+                c => new AppointmentViewModel()
+                {
+                    Id = c.Id,
+                    Description = c.Description,
+                    StartDate = c.StartDate.ToString("d-MM-yyyy HH:mm"),
+                    EndDate = c.EndDate.ToString("d-M-yyyy HH: mm"),
+                    Title = c.Title,
+                    Duration = c.Duration,
+                    IsDoctorApproved = c.IsDoctorApproved,
+                    PatientId = c.PatientId,
+                    DoctorId = c.DoctorId,
+                    PatientName = _db.Users.Where(u => u.Id == c.PatientId).Select(u => u.FullName).FirstOrDefault(),
+                    DoctorName = _db.Users.Where(u => u.Id == c.DoctorId).Select(u => u.FullName).FirstOrDefault()
+                }).SingleOrDefault();
+        }
+
+        public async Task<int> DeleteAppointment(int id)
+        {
+            var appointment = _db.Appointments.FirstOrDefault(a => a.Id == id);
+            if (appointment != null)
+            {
+                _db.Appointments.Remove(appointment);
+                return await _db.SaveChangesAsync();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public async Task<int> ConfirmAppointment(int id)
+        {
+            var appointment = _db.Appointments.FirstOrDefault(a => a.Id == id);
+            if(appointment != null)
+            {
+                appointment.IsDoctorApproved = true;
+                return await _db.SaveChangesAsync();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        #endregion
+
     }
 }
