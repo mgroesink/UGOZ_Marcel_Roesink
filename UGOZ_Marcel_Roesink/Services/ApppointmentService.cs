@@ -76,10 +76,10 @@ namespace UGOZ_Marcel_Roesink.Services
                     IsDoctorApproved = model.IsDoctorApproved,
                     AdminId = model.AdminId
                 };
-                await _emailSender.SendEmailAsync("mroesink@rocvantwente.nl", "Greetings from Mailjet.",
-                    $"Er is een afspraak voor U ingepland met {patient.FullName}. Deze moet door U nog bevestigd worden.");
+                await _emailSender.SendEmailAsync("mroesink@rocvantwente.nl", "Afspraak ingepland.",
+                    $"<div style='font-size: 14px'>Er is een afspraak voor U ingepland met <b>{patient.FullName}</b>. <span style='color:red;font-weight:bold'>Deze moet door U nog bevestigd worden.</span></div>");
                 await _emailSender.SendEmailAsync("mg.roesink@gmail.com", "Afspraak ingepland",
-                    $"Er is een afspraak voor U ingepland met {doctor.FullName}. Deze moet door door de dokter nog bevestigd worden.");
+                    $"<div style='font-size: 14px'>Er is een afspraak voor U ingepland met <b>{doctor.FullName}</b>. <span style='color:red;font-weight:bold'>Deze moet door de dokter nog bevestigd worden.</span></div>");
                 _db.Appointments.Add(appointment);
                 await _db.SaveChangesAsync();
                 return 2;

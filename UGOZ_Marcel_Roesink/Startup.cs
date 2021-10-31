@@ -45,7 +45,7 @@ namespace UGOZ_Marcel_Roesink
             services.AddHttpContextAccessor();
             services.ConfigureApplicationCookie(option =>
             {
-                option.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("Home/AccessDenied");
+                option.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/AccessDenied");
             });
 
         }
