@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UGOZ_Marcel_Roesink.DatabaseInitializer;
 using UGOZ_Marcel_Roesink.Models;
 using UGOZ_Marcel_Roesink.Services;
 using UGOZ_Marcel_Roesink.Utility;
@@ -31,6 +32,7 @@ namespace UGOZ_Marcel_Roesink
         {
             services.AddDistributedMemoryCache();
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromDays(10);
@@ -51,7 +53,7 @@ namespace UGOZ_Marcel_Roesink
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env , IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -65,15 +67,11 @@ namespace UGOZ_Marcel_Roesink
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
-
+            dbInitializer.Initialize();
             app.UseSession();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
