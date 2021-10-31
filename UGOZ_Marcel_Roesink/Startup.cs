@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UGOZ_Marcel_Roesink.Models;
 using UGOZ_Marcel_Roesink.Services;
+using UGOZ_Marcel_Roesink.Utility;
 
 namespace UGOZ_Marcel_Roesink
 {
@@ -28,6 +30,7 @@ namespace UGOZ_Marcel_Roesink
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
+            services.AddScoped<IEmailSender, EmailSender>();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromDays(10);
@@ -40,6 +43,10 @@ namespace UGOZ_Marcel_Roesink
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddHttpContextAccessor();
+            services.ConfigureApplicationCookie(option =>
+            {
+                option.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("Home/AccessDenied");
+            });
 
         }
 

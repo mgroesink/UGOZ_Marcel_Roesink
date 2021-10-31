@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace UGOZ_Marcel_Roesink.Services
     {
         #region Fields
         private readonly ApplicationDbContext _db;
+        private readonly IEmailSender _emailSender;
 
         #endregion
 
@@ -21,9 +23,10 @@ namespace UGOZ_Marcel_Roesink.Services
         /// Initializes a new instance of the <see cref="AppointmentService"/> class.
         /// </summary>
         /// <param name="db">The database.</param>
-        public AppointmentService(ApplicationDbContext db)
+        public AppointmentService(ApplicationDbContext db, IEmailSender emailSender)
         {
             _db = db;
+            _emailSender = emailSender;
         }
         #endregion
 
@@ -38,9 +41,22 @@ namespace UGOZ_Marcel_Roesink.Services
             // Let op het gebruik van een specifieke culture om de datum string te converteren naar een DateTime object
             var startDate = DateTime.Parse(model.StartDate, CultureInfo.CreateSpecificCulture("nl-NL"));
             var endDate = startDate.AddMinutes(Convert.ToDouble(model.Duration));
+            var patient = _db.Users.FirstOrDefault(u => u.Id == model.PatientId);
+            var doctor = _db.Users.FirstOrDefault(u => u.Id == model.DoctorId);
             if (model != null && model.Id > 0)
             {
                 //TODO: Add code to update existing appointment
+                var appointment = _db.Appointments.FirstOrDefault(a => a.Id == model.Id);
+                appointment.Title = model.Title;
+                appointment.Description = model.Description;
+                appointment.StartDate = startDate;
+                appointment.EndDate = endDate;
+                appointment.Duration = model.Duration;
+                appointment.DoctorId = model.DoctorId;
+                appointment.PatientId = model.PatientId;
+                appointment.IsDoctorApproved = false;
+                appointment.AdminId = model.AdminId;
+                await _db.SaveChangesAsync();
                 return 1;
             }
             else
@@ -60,6 +76,10 @@ namespace UGOZ_Marcel_Roesink.Services
                     IsDoctorApproved = model.IsDoctorApproved,
                     AdminId = model.AdminId
                 };
+                await _emailSender.SendEmailAsync("mroesink@rocvantwente.nl", "Greetings from Mailjet.",
+                    $"Er is een afspraak voor U ingepland met {patient.FullName}. Deze moet door U nog bevestigd worden.");
+                await _emailSender.SendEmailAsync("mg.roesink@gmail.com", "Afspraak ingepland",
+                    $"Er is een afspraak voor U ingepland met {doctor.FullName}. Deze moet door door de dokter nog bevestigd worden.");
                 _db.Appointments.Add(appointment);
                 await _db.SaveChangesAsync();
                 return 2;
@@ -188,7 +208,7 @@ namespace UGOZ_Marcel_Roesink.Services
         public async Task<int> ConfirmAppointment(int id)
         {
             var appointment = _db.Appointments.FirstOrDefault(a => a.Id == id);
-            if(appointment != null)
+            if (appointment != null)
             {
                 appointment.IsDoctorApproved = true;
                 return await _db.SaveChangesAsync();

@@ -33,5 +33,10 @@ namespace UGOZ_Marcel_Roesink.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult AccessDeniedPage()
+        {
+            return View();
+        }
     }
 }
